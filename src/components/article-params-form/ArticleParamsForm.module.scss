@@ -13,6 +13,7 @@
 }
 
 .form {
+	gap: 16px;
 	display: flex;
 	flex-shrink: 0;
 	flex-direction: column;
@@ -23,6 +24,13 @@
 	padding: 50px 31px;
 	background-color: #ffffff;
 	border-right: 1px solid #000000;
+}
+.title {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 800;
+	font-style: normal;
+	font-size: 31px;
+	text-transform: uppercase;
 }
 
 .bottomContainer {
