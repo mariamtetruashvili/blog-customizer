@@ -29,7 +29,7 @@ export const ArticleParamsForm = ({
 	onReset,
 }: ArticleParamsFormProps) => {
 	// Состояние открытия/закрытия боковой панели
-	const [isOpen, setIsOpen] = useState(false);
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 	// Локальное состояние формы (изменения не применяются сразу)
 	const [formState, setFormState] = useState<ArticleStateType>(currentState);
@@ -38,22 +38,25 @@ export const ArticleParamsForm = ({
 	const sidebarRef = useRef<HTMLDivElement>(null);
 
 	// Функция открытия/закрытия sidebar
-	const toggleSidebar = () => setIsOpen(!isOpen);
+	const toggleSidebar = () => setIsMenuOpen(!isMenuOpen);
 
 	// Обработчик клика вне sidebar для закрытия панели
 	useEffect(() => {
+		// если меню закрыто — обработчик не вешаем
+		if (!isMenuOpen) return;
+
 		const handleClickOutside = (e: MouseEvent) => {
 			if (
 				sidebarRef.current &&
 				!sidebarRef.current.contains(e.target as Node)
 			) {
-				setIsOpen(false);
+				setIsMenuOpen(false);
 			}
 		};
 
 		document.addEventListener('mousedown', handleClickOutside);
 		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, []);
+	}, [isMenuOpen]);
 
 	// Функции изменения полей формы
 	const handleFontFamilyChange = (option: (typeof fontFamilyOptions)[0]) => {
@@ -82,7 +85,7 @@ export const ArticleParamsForm = ({
 	const handleApply = (e?: React.FormEvent) => {
 		e?.preventDefault();
 		onApply(formState); // Передаем новые настройки вверх
-		setIsOpen(false); // Закрываем sidebar
+		setIsMenuOpen(false); // Закрываем sidebar
 	};
 
 	// Сброс формы к дефолтным значениям
@@ -90,19 +93,19 @@ export const ArticleParamsForm = ({
 		e?.preventDefault();
 		setFormState(defaultArticleState); // Сбрасываем локальное состояние формы
 		onReset(); // Сбрасываем состояние статьи в App
-		setIsOpen(false); // Закрываем sidebar
+		setIsMenuOpen(false); // Закрываем sidebar
 	};
 
 	return (
 		<>
 			{/* Кнопка-стрелка для открытия/закрытия панели */}
-			<ArrowButton isOpen={isOpen} onClick={toggleSidebar} />
+			<ArrowButton isOpen={isMenuOpen} onClick={toggleSidebar} />
 
 			{/* Боковая панель с настройками */}
 			<aside
 				ref={sidebarRef}
 				className={`${styles.container} ${
-					isOpen ? styles.container_open : ''
+					isMenuOpen ? styles.container_open : ''
 				}`}>
 				{/* Форма настроек */}
 				<form className={styles.form} onSubmit={handleApply}>
